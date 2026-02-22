@@ -1,0 +1,10 @@
+{
+  "id": "obsidian-whoop-plugin",
+  "name": "WHOOP",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Fetch WHOOP fitness data and write daily/weekly health notes into your vault.",
+  "author": "Ben Strawbridge",
+  "authorUrl": "https://github.com/benstraw",
+  "isDesktopOnly": false
+}
