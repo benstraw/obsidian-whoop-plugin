@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { renderDaily } from "../templates/daily.ts";
 import { renderWeekly } from "../templates/weekly.ts";
-import { buildWeekStats } from "../render.ts";
+import { renderPersona } from "../templates/persona.ts";
+import { buildWeekStats, buildPersonaData } from "../render.ts";
 import { makeDayData, makeRecovery, makeCycle } from "./fixtures.ts";
 
 describe("renderDaily", () => {
@@ -136,5 +137,49 @@ describe("renderWeekly", () => {
   it("handles empty stats gracefully", () => {
     const output = renderWeekly(buildWeekStats([]));
     expect(output).toContain("No data available");
+  });
+});
+
+describe("renderPersona", () => {
+  const days = Array.from({ length: 30 }, (_, i) =>
+    makeDayData({ date: new Date(Date.UTC(2026, 0, i + 1)) })
+  );
+  const persona = buildPersonaData(days);
+
+  it("produces valid markdown", () => {
+    const output = renderPersona(persona);
+    expect(output).toContain("# WHOOP Health Persona");
+    expect(output).toContain("type: context");
+    expect(output).toContain("ai-brain/context");
+  });
+
+  it("includes all stat sections", () => {
+    const output = renderPersona(persona);
+    expect(output).toContain("Average Recovery Score");
+    expect(output).toContain("Average HRV");
+    expect(output).toContain("HRV Trend");
+    expect(output).toContain("Average RHR");
+    expect(output).toContain("Average Sleep Duration");
+    expect(output).toContain("Average Sleep Performance");
+    expect(output).toContain("Average Day Strain");
+    expect(output).toContain("Total Workouts");
+  });
+
+  it("includes recovery distribution", () => {
+    const output = renderPersona(persona);
+    expect(output).toContain("Green (67–100)");
+    expect(output).toContain("Yellow (34–66)");
+    expect(output).toContain("Red (0–33)");
+  });
+
+  it("includes period dates", () => {
+    const output = renderPersona(persona);
+    expect(output).toContain("2026-01-01");
+    expect(output).toContain("2026-01-30");
+  });
+
+  it("includes regeneration instruction", () => {
+    const output = renderPersona(persona);
+    expect(output).toContain("Generate 30-day health persona");
   });
 });

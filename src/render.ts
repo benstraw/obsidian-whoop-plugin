@@ -213,6 +213,85 @@ export function hrvTrendLabel(vals: number[]): string {
   return "Stable";
 }
 
+// --- Persona aggregation ---
+
+export interface PersonaData {
+  generatedDate: string;
+  periodStart: string;
+  periodEnd: string;
+  avgRecovery: number;
+  avgHRV: number;
+  hrvTrend: string;
+  avgRHR: number;
+  avgSleepMillis: number;
+  avgSleepPerf: number;
+  avgStrain: number;
+  totalWorkouts: number;
+  greenDays: number;
+  yellowDays: number;
+  redDays: number;
+}
+
+export function buildPersonaData(days: DayData[]): PersonaData {
+  let totalRecovery = 0, totalHRV = 0, totalRHR = 0;
+  let totalSleepMs = 0, totalSleepPerf = 0, totalStrain = 0;
+  let totalWorkouts = 0;
+  let greenDays = 0, yellowDays = 0, redDays = 0;
+  let recoveryCount = 0, sleepCount = 0, cycleCount = 0;
+  const hrvValues: number[] = [];
+
+  for (const d of days) {
+    if (d.recovery && d.recovery.score_state === "SCORED") {
+      totalRecovery += d.recovery.score.recovery_score;
+      totalHRV += d.recovery.score.hrv_rmssd_milli;
+      totalRHR += d.recovery.score.resting_heart_rate;
+      hrvValues.push(d.recovery.score.hrv_rmssd_milli);
+      recoveryCount++;
+
+      const color = recoveryColor(d.recovery.score.recovery_score);
+      if (color === "green") greenDays++;
+      else if (color === "yellow") yellowDays++;
+      else redDays++;
+    }
+
+    for (const s of d.sleeps) {
+      if (!s.nap && s.score_state === "SCORED") {
+        totalSleepMs += s.score.stage_summary.total_in_bed_time_milli;
+        totalSleepPerf += s.score.sleep_performance_percentage;
+        sleepCount++;
+      }
+    }
+
+    if (d.cycle && d.cycle.score_state === "SCORED") {
+      totalStrain += d.cycle.score.strain;
+      cycleCount++;
+    }
+
+    totalWorkouts += d.workouts.length;
+  }
+
+  return {
+    generatedDate: formatDateUTC(new Date()),
+    periodStart: days.length > 0 ? formatDateUTC(days[0].date) : "",
+    periodEnd: days.length > 0 ? formatDateUTC(days[days.length - 1].date) : "",
+    avgRecovery: avg(totalRecovery, recoveryCount),
+    avgHRV: avg(totalHRV, recoveryCount),
+    hrvTrend: hrvTrendLabel(hrvValues),
+    avgRHR: avg(totalRHR, recoveryCount),
+    avgSleepMillis: sleepCount > 0 ? totalSleepMs / sleepCount : 0,
+    avgSleepPerf: avg(totalSleepPerf, sleepCount),
+    avgStrain: avg(totalStrain, cycleCount),
+    totalWorkouts,
+    greenDays,
+    yellowDays,
+    redDays,
+  };
+}
+
+export function personaNotePath(folder: string): string {
+  return `${folder}/whoop-persona.md`;
+}
+
 // --- Output path helpers ---
 
 export function dailyNotePath(date: Date, folder: string): string {

@@ -19,11 +19,14 @@ import {
 } from "./fetch.ts";
 import {
   buildWeekStats,
+  buildPersonaData,
   dailyNotePath,
   weeklyNotePath,
+  personaNotePath,
 } from "./render.ts";
 import { renderDaily } from "./templates/daily.ts";
 import { renderWeekly } from "./templates/weekly.ts";
+import { renderPersona } from "./templates/persona.ts";
 
 export default class WhoopPlugin extends Plugin {
   settings!: WhoopSettings;
@@ -95,6 +98,14 @@ export default class WhoopPlugin extends Plugin {
         new BackfillModal(this.app, async (n) => {
           await this.backfillDays(n);
         }).open();
+      },
+    });
+
+    this.addCommand({
+      id: "generate-persona",
+      name: "Generate 30-day health persona",
+      callback: async () => {
+        await this.generatePersona();
       },
     });
 
@@ -186,6 +197,29 @@ export default class WhoopPlugin extends Plugin {
       await this.writeNote(path, content);
       notice.hide();
       new Notice(`Weekly note written: ${path}`);
+    } catch (e) {
+      notice.hide();
+      new Notice(`Error: ${(e as Error).message}`);
+      console.error("[WHOOP]", e);
+    }
+  }
+
+  async generatePersona() {
+    const notice = new Notice("Fetching 30 days of WHOOP data…", 0);
+    try {
+      const client = await this.getClient();
+      const today = startOfDayUTC(new Date());
+      const days = await Promise.all(
+        Array.from({ length: 30 }, (_, i) =>
+          getDayData(client, addDays(today, -(29 - i)))
+        )
+      );
+      const persona = buildPersonaData(days);
+      const content = renderPersona(persona);
+      const path = personaNotePath(this.settings.outputFolder);
+      await this.writeNote(path, content);
+      notice.hide();
+      new Notice(`Health persona written: ${path}`);
     } catch (e) {
       notice.hide();
       new Notice(`Error: ${(e as Error).message}`);
