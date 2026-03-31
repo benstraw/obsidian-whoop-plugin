@@ -175,7 +175,7 @@ export class AuthModal extends Modal {
 
     new Setting(contentEl).addButton((btn) => {
       btn
-        .setButtonText("Open WHOOP Authorization Page")
+        .setButtonText("Open WHOOP authorization page")
         .setCta()
         .onClick(() => {
           window.open(this.authUrl, "_blank");
@@ -198,7 +198,7 @@ export class AuthModal extends Modal {
 
     new Setting(contentEl).addButton((btn) => {
       btn
-        .setButtonText("Complete Authorization")
+        .setButtonText("Complete authorization")
         .setCta()
         .onClick(async () => {
           if (!codeInput) {

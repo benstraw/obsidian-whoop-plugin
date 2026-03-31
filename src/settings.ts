@@ -29,19 +29,18 @@ export class WhoopSettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.addClass("whoop-settings");
 
-    containerEl.createEl("h2", { text: "WHOOP Plugin Settings" });
+    new Setting(containerEl).setName("WHOOP plugin settings").setHeading();
 
     // Connection status
     const statusEl = containerEl.createEl("p");
+    statusEl.appendText("Status: ");
     if (this.plugin.settings.tokens) {
-      statusEl.innerHTML =
-        'Status: <span class="whoop-status-connected">Connected</span>';
+      statusEl.createSpan({ cls: "whoop-status-connected", text: "Connected" });
     } else {
-      statusEl.innerHTML =
-        'Status: <span class="whoop-status-disconnected">Not connected</span>';
+      statusEl.createSpan({ cls: "whoop-status-disconnected", text: "Not connected" });
     }
 
-    containerEl.createEl("h3", { text: "API Credentials" });
+    new Setting(containerEl).setName("API credentials").setHeading();
     containerEl.createEl("p", {
       text: "Get your credentials at developer.whoop.com. Create an app with redirect URI: obsidian://whoop-callback",
       cls: "setting-item-description",
@@ -61,7 +60,7 @@ export class WhoopSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Client Secret")
+      .setName("Client secret")
       .setDesc("Your WHOOP app client secret")
       .addText((text) => {
         text
@@ -74,7 +73,7 @@ export class WhoopSettingTab extends PluginSettingTab {
         text.inputEl.type = "password";
       });
 
-    containerEl.createEl("h3", { text: "Authorization" });
+    new Setting(containerEl).setName("Authorization").setHeading();
 
     new Setting(containerEl)
       .setName("Connect to WHOOP")
@@ -122,7 +121,7 @@ export class WhoopSettingTab extends PluginSettingTab {
         );
     }
 
-    containerEl.createEl("h3", { text: "Output" });
+    new Setting(containerEl).setName("Output").setHeading();
 
     new Setting(containerEl)
       .setName("Output folder")
