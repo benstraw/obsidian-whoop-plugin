@@ -105,8 +105,6 @@ ${
 }`
     : "";
 
-  const firstYear = firstDay.date.getUTCFullYear();
-
   return `---
 type: note
 tags:

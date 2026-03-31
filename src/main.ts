@@ -53,7 +53,7 @@ export default class WhoopPlugin extends Plugin {
       id: "generate-daily-date",
       name: "Generate daily note for a specific date…",
       callback: () => {
-        new DatePickerModal(this.app, "Generate Daily Note", async (dateStr) => {
+        new DatePickerModal(this.app, "Generate daily note", async (dateStr) => {
           const date = parseLocalDate(dateStr);
           if (!date) {
             new Notice("Invalid date. Use YYYY-MM-DD format.");
@@ -78,7 +78,7 @@ export default class WhoopPlugin extends Plugin {
       callback: () => {
         new DatePickerModal(
           this.app,
-          "Generate Weekly Note (enter any date in that week)",
+          "Generate weekly note (enter any date in that week)",
           async (dateStr) => {
             const date = parseLocalDate(dateStr);
             if (!date) {
@@ -335,7 +335,7 @@ class BackfillModal extends Modal {
 
   onOpen() {
     const { contentEl } = this;
-    contentEl.createEl("h2", { text: "Backfill Daily Notes" });
+    contentEl.createEl("h2", { text: "Backfill daily notes" });
 
     let n = 7;
     new Setting(contentEl)
