@@ -29,8 +29,6 @@ export class WhoopSettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.addClass("whoop-settings");
 
-    new Setting(containerEl).setName("WHOOP plugin settings").setHeading();
-
     // Connection status
     const statusEl = containerEl.createEl("p");
     statusEl.appendText("Status: ");
@@ -88,7 +86,7 @@ export class WhoopSettingTab extends PluginSettingTab {
           .setCta()
           .onClick(() => {
             if (!this.plugin.settings.clientId || !this.plugin.settings.clientSecret) {
-              new Notice("Please enter your Client ID and Client Secret first.");
+              new Notice("Please enter your client ID and client secret first.");
               return;
             }
             new AuthModal(

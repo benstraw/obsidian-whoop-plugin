@@ -167,7 +167,7 @@ export class AuthModal extends Modal {
       text: "Click the button below to open the WHOOP authorization page in your browser.",
     });
     ol.createEl("li", {
-      text: 'Authorize the app. You will be redirected to an "obsidian://" URL.',
+      text: "Authorize the app. Obsidian will open automatically to complete the connection.",
     });
     ol.createEl("li", {
       text: 'If Obsidian opens automatically, authorization completes. Otherwise, copy the "code" parameter from the URL bar and paste it below.',

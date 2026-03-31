@@ -93,7 +93,7 @@ export default class WhoopPlugin extends Plugin {
 
     this.addCommand({
       id: "backfill-days",
-      name: "Backfill last N days…",
+      name: "Backfill last n days…",
       callback: () => {
         new BackfillModal(this.app, async (n) => {
           await this.backfillDays(n);
@@ -340,7 +340,7 @@ class BackfillModal extends Modal {
     let n = 7;
     new Setting(contentEl)
       .setName("Number of days")
-      .setDesc("Generates notes for the last N days, skipping any that already exist.")
+      .setDesc("Generates notes for the last n days, skipping any that already exist.")
       .addText((text) =>
         text
           .setValue("7")
